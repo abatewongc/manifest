@@ -11,7 +11,8 @@ func HandleError(err error) (b bool) {
 		// the error happened, 0 = this function, we don't want that.
 		pc, fn, line, _ := runtime.Caller(1)
 
-		log.Fatalf("[error] in %s [%s:%d] %v", runtime.FuncForPC(pc).Name(), fn, line, err)
+		log.Printf("[error] in %s[%s:%d] %v", runtime.FuncForPC(pc).Name(), fn, line, err)
+		b = true
 	}
 	return
 }
