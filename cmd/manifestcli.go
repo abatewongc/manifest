@@ -1,12 +1,13 @@
 package main
 
 import (
+	"errors"
+	"flag"
 	"fmt"
 	"github.com/aleosiss/manifest/cmd/manifest"
 	"github.com/aleosiss/manifest/internal/resource"
 	"github.com/aleosiss/manifest/internal/util"
 	"github.com/aleosiss/manifest/internal/web"
-	"log"
 	"os"
 	"strings"
 	"sync"
@@ -15,11 +16,12 @@ import (
 func main() {
 	initialize()
 
-	manifestFile, err := manifest.From("./test/examples/manifest.json")
-	if err != nil {
-		fmt.Println("Error " + err.Error())
-		return
-	}
+	args, err := handleArguments()
+	util.HandleError(err)
+
+	manifestFile, err := manifest.From(args[0])
+	util.HandleError(err)
+	err = manifest.Validate(manifestFile)
 
 	var files []string
 
@@ -36,35 +38,43 @@ func main() {
 	wg.Wait()
 
 	err = packageForDeployment(manifestFile.Package.Type, manifestFile.Package.Location, files)
-	HandleError(err)
+	util.HandleError(err)
 
 	cleanup()
 }
 
+func handleArguments() (args []string, err error) {
+	flag.Parse()
+	args = flag.Args()
+
+
+	if len(args) < 1 {
+		err = errors.New("no manifest file was provided")
+	}
+	return
+}
+
 func handleTarget(target manifest.Target) string {
 	fmt.Println("Found target: " + target.Name)
-	url, err := formatURLWithVersion(target)
-	HandleError(err)
+	url, err := util.ExpandText(target.URL, "version", target.TargetVersion)
+	util.HandleError(err)
 
-	downloadedTarget, err := downloadTarget(target, url)
-	HandleError(err)
+	downloadedTarget, err := web.DownloadTarget(target, url)
+	util.HandleError(err)
 
 	processedTarget, err := postprocessTarget(target.PostProcess, downloadedTarget)
-	HandleError(err)
+	util.HandleError(err)
 
 	return processedTarget
 }
 
-func cleanup() {
-	//util.CleanUp()
-}
-
-func HandleError(err error) {
-	if err != nil { panic(err) }
-}
-
 func initialize() {
 	resource.CreateDirectories()
+}
+
+func postprocessTarget(process string, target string) (filePath string, err error) {
+	filePath = target
+	return
 }
 
 func packageForDeployment(packageType manifest.PackageType, location string, files []string) (err error) {
@@ -73,21 +83,18 @@ func packageForDeployment(packageType manifest.PackageType, location string, fil
 	if packageType == manifest.ZIP {
 		archive, err = util.ArchiveZip(files)
 		if err != nil && ! strings.Contains(err.Error(), "file already exists") {
-			HandleError(err)
+			util.HandleError(err)
 		}
+	} else {
+		util.HandleError(errors.New("package instructions did not contain a supported type"))
 	}
-
 
 	err = os.MkdirAll(location, os.ModeDir)
-	if err != nil {
-		log.Fatal(err)
-	}
+	util.HandleError(err)
 
 	if util.Exists(archive) {
 		err := util.MoveFile(archive, location)
-		if err != nil {
-			log.Fatal(err)
-		}
+		util.HandleError(err)
 	} else {
 		fmt.Println("archive did not exist")
 	}
@@ -96,21 +103,7 @@ func packageForDeployment(packageType manifest.PackageType, location string, fil
 	return nil
 }
 
-func stageTarget(targetPath string, files []string) []string {
-	files = append(files, targetPath)
-	return files
+func cleanup() {
+	util.CleanUp()
 }
 
-func postprocessTarget(process string, target string) (filePath string, err error) {
-	filePath = target
-
-	return
-}
-
-func downloadTarget(target manifest.Target, url string) (filePath string, err error) {
-	return web.DownloadTarget(target, url)
-}
-
-func formatURLWithVersion(target manifest.Target) (string, error) {
-	return util.ExpandText(target.URL, "version", target.TargetVersion)
-}

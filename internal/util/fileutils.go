@@ -1,7 +1,6 @@
 package util
 
 import (
-	"fmt"
 	"github.com/aleosiss/manifest/internal/resource"
 	"github.com/draxil/gomv"
 	"os"
@@ -9,15 +8,13 @@ import (
 )
 
 func CleanUp() {
-	err := os.Remove(resource.ManifestDownloadDir)
+	err := os.RemoveAll(resource.ManifestDownloadDir)
 	_ = os.Mkdir(resource.ManifestDownloadDir, os.ModeDir)
 
-	err = os.Remove(resource.ManifestStagingDir)
+	err = os.RemoveAll(resource.ManifestStagingDir)
 	_ = os.Mkdir(resource.ManifestStagingDir, os.ModeDir)
 
-	if err != nil {
-		fmt.Println(err)
-	}
+	HandleError(err)
 }
 
 func Exists(name string) (b bool) {

@@ -3,6 +3,7 @@ package manifest
 import (
 	"encoding/json"
 	"github.com/aleosiss/manifest/cmd/file"
+	"github.com/aleosiss/manifest/internal/util"
 )
 
 // Manifest : This is why we're here.
@@ -30,13 +31,16 @@ type PackageType string
 const (
 	ZIP = PackageType("zip")
 )
+var packageTypes = map[string]PackageType{
+	"zip": ZIP,
+	"ZIP": ZIP,
+	"Zip": ZIP,
+}
 
-// From : deserialize manifest given file path
+// From : deserialize cmd given file path
 func From(Path string) (manifest Manifest, err error) {
 	rawJSON, err := file.ReadBytes(Path)
-	if err != nil {
-		return
-	}
+	util.HandleError(err)
 
 	err = json.Unmarshal(rawJSON, &manifest)
 	return
