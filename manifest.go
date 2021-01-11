@@ -27,7 +27,6 @@ func handleArguments() (args []string, err error) {
 	flag.Parse()
 	args = flag.Args()
 
-
 	if len(args) < 1 {
 		UIMode = true
 	}

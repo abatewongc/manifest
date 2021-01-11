@@ -43,4 +43,5 @@ func handleManifest() {
 	gui.Update()
 	globals.UIWorking = false
 	gui.Update()
+	targetedManifest = ""
 }
