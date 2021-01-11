@@ -26,7 +26,7 @@ func Exists(name string) (b bool) {
 	return b
 }
 
-func MoveFile(src string, dest string) (err error) {
+func MoveFile(src string, dest string) (_ string, err error) {
 	srcfi, err := os.Stat(src)
 	destfi, err := os.Stat(dest)
 
@@ -35,12 +35,13 @@ func MoveFile(src string, dest string) (err error) {
 	}
 
 	var filename string
-	if ! srcfi.IsDir() && destfi.IsDir() {
+	if !srcfi.IsDir() && destfi.IsDir() {
 		filename = filepath.Base(src)
 	}
 
 	dest = filepath.Join(dest, filename)
 
 	err = gomv.MoveFile(src, dest)
-	return
+	dest, _ = filepath.Abs(dest)
+	return dest, err
 }

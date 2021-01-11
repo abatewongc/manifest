@@ -15,7 +15,7 @@ func main() {
 	args, err := handleArguments()
 	util.HandleError(err)
 	if !UIMode {
-		manifest.Manifesto(args[0])
+		manifest.Manifesto(args[0], false)
 	} else {
 		ui.Start()
 	}

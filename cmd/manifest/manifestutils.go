@@ -3,12 +3,15 @@ package manifest
 import (
 	"errors"
 	"fmt"
+	gui "github.com/AllenDang/giu"
 	"github.com/agrison/go-commons-lang/stringUtils"
+	"github.com/aleosiss/manifest/internal/globals"
 	"github.com/aleosiss/manifest/internal/util"
 	"github.com/aleosiss/manifest/internal/web"
 	"os"
 	"strings"
 	"sync"
+	"time"
 )
 
 func Validate(manifest Manifest) (err error) {
@@ -34,7 +37,13 @@ func Validate(manifest Manifest) (err error) {
 	return nil
 }
 
-func Manifesto(filePath string) (err error, fileErrors []error) {
+func Manifesto(filePath string, uiEnabled bool) (err error, fileErrors []error) {
+	if uiEnabled {
+		globals.UIProgressBarLabel = "Validating Manifest..."
+		gui.Update()
+		time.Sleep(1 * time.Second)
+	}
+
 	manifestFile, err := From(filePath)
 	if util.HandleError(err) {
 		return err, fileErrors
@@ -44,7 +53,14 @@ func Manifesto(filePath string) (err error, fileErrors []error) {
 
 	var files []string
 
-	fmt.Println("Handling Manifest: " + manifestFile.Name)
+	if uiEnabled {
+		globals.UIProgressBarLabel = "Downloading Targets..."
+		gui.Update()
+		time.Sleep(2 * time.Second)
+	} else {
+		fmt.Println("Handling Manifest: " + manifestFile.Name)
+	}
+
 	wg := sync.WaitGroup{}
 	for _, target := range manifestFile.Targets {
 		wg.Add(1)
@@ -57,6 +73,12 @@ func Manifesto(filePath string) (err error, fileErrors []error) {
 		}(target)
 	}
 	wg.Wait()
+
+	if uiEnabled {
+		globals.UIProgressBarLabel = "Packaging files..."
+		gui.Update()
+		time.Sleep(1 * time.Second)
+	}
 
 	err = packageForDeployment(manifestFile.Package.Type, manifestFile.Package.Location, files)
 	if util.HandleError(err) {
@@ -108,8 +130,9 @@ func packageForDeployment(packageType PackageType, location string, files []stri
 	util.HandleError(err)
 
 	if util.Exists(archive) {
-		err := util.MoveFile(archive, location)
+		dest, err := util.MoveFile(archive, location)
 		util.HandleError(err)
+		fmt.Println("Package saved to " + dest)
 	} else {
 		fmt.Println("archive did not exist")
 	}
@@ -121,5 +144,3 @@ func packageForDeployment(packageType PackageType, location string, files []stri
 func cleanup() {
 	util.CleanUp()
 }
-
-
