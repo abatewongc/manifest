@@ -37,7 +37,7 @@ func Validate(manifest Manifest) (err error) {
 	return nil
 }
 
-func Manifesto(filePath string, uiEnabled bool) (err error, fileErrors []error) {
+func Process(filePath string, uiEnabled bool) (err error, fileErrors []error) {
 	if uiEnabled {
 		globals.UIProgressBarLabel = "Validating Manifest..."
 		gui.Update()

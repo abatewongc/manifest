@@ -1,6 +1,7 @@
 package globals
 
 var (
-	UIWorking bool = false
+	UIWorking          bool   = false
 	UIProgressBarLabel string = ""
+	CWD                       = ""
 )

@@ -3,3 +3,6 @@
 
 .idea/
 go.sum
+test/examples/output/
+
+*.sum

@@ -39,7 +39,7 @@ func onLoadManifest() {
 func handleManifest() {
 	globals.UIWorking = true
 	gui.Update()
-	_, _ = manifest.Manifesto(targetedManifest, true)
+	_, _ = manifest.Process(targetedManifest, true)
 	gui.Update()
 	globals.UIWorking = false
 	gui.Update()
