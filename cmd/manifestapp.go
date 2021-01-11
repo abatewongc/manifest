@@ -8,14 +8,14 @@ import (
 	"github.com/aleosiss/manifest/internal/web"
 	"log"
 	"os"
-	"path/filepath"
 	"strings"
+	"sync"
 )
 
 func main() {
 	initialize()
 
-	manifest, err := manifest.From("./test/examples/manifest.json")
+	manifestFile, err := manifest.From("./test/examples/manifest.json")
 	if err != nil {
 		fmt.Println("Error " + err.Error())
 		return
@@ -23,18 +23,25 @@ func main() {
 
 	var files []string
 
-	fmt.Println("Handling Manifest: " + manifest.Name)
-	for _, target := range manifest.Targets {
-		files = manifesto(target, files)
+	fmt.Println("Handling Manifest: " + manifestFile.Name)
+	wg := sync.WaitGroup{}
+	for _, target := range manifestFile.Targets {
+		wg.Add(1)
+		go func(target manifest.Target) {
+			defer wg.Done()
+			file := handleTarget(target)
+			files = append(files, file)
+		} (target)
 	}
+	wg.Wait()
 
-	err = packageForDeployment(manifest.Package.Type, manifest.Package.Location, files)
+	err = packageForDeployment(manifestFile.Package.Type, manifestFile.Package.Location, files)
 	HandleError(err)
 
 	cleanup()
 }
 
-func manifesto(target manifest.Target, files []string) []string {
+func handleTarget(target manifest.Target) string {
 	fmt.Println("Found target: " + target.Name)
 	url, err := formatURLWithVersion(target)
 	HandleError(err)
@@ -45,8 +52,7 @@ func manifesto(target manifest.Target, files []string) []string {
 	processedTarget, err := postprocessTarget(target.PostProcess, downloadedTarget)
 	HandleError(err)
 
-	files = stageTarget(processedTarget, files)
-	return files
+	return processedTarget
 }
 
 func cleanup() {
@@ -66,7 +72,7 @@ func packageForDeployment(packageType manifest.PackageType, location string, fil
 
 	if packageType == manifest.ZIP {
 		archive, err = util.ArchiveZip(files)
-		if ! strings.Contains(err.Error(), "file already exists") {
+		if err != nil && ! strings.Contains(err.Error(), "file already exists") {
 			HandleError(err)
 		}
 	}
@@ -91,14 +97,7 @@ func packageForDeployment(packageType manifest.PackageType, location string, fil
 }
 
 func stageTarget(targetPath string, files []string) []string {
-	stagedPath := resource.ManifestStagingDir + string(filepath.Separator) + filepath.Base(targetPath)
-
-	err := util.MoveFile(targetPath, stagedPath)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	files = append(files, stagedPath)
+	files = append(files, targetPath)
 	return files
 }
 
