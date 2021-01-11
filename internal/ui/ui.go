@@ -18,7 +18,7 @@ func loop() {
 	gui.SingleWindow("manifest").Layout(gui.Layout{
 		gui.Line(gui.Button("Load Manifest").Size(620, 50).OnClick(onLoadManifest)),
 		gui.Label("Loaded Manifest: " + stringUtils.Abbreviate(targetedManifest, 120)),
-		gui.Line(gui.Box),
+		gui.Line(),
 
 	})
 }
