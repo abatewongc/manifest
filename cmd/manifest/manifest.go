@@ -2,7 +2,6 @@ package manifest
 
 import (
 	"encoding/json"
-	"github.com/aleosiss/manifest/cmd/file"
 	"github.com/aleosiss/manifest/internal/util"
 )
 
@@ -39,7 +38,7 @@ var packageTypes = map[string]PackageType{
 
 // From : deserialize cmd given file path
 func From(Path string) (manifest Manifest, err error) {
-	rawJSON, err := file.ReadBytes(Path)
+	rawJSON, err := util.ReadBytes(Path)
 	util.HandleError(err)
 
 	err = json.Unmarshal(rawJSON, &manifest)

@@ -3,6 +3,7 @@ package util
 import (
 	"github.com/aleosiss/manifest/internal/resource"
 	"github.com/draxil/gomv"
+	"io/ioutil"
 	"os"
 	"path/filepath"
 )
@@ -45,3 +46,10 @@ func MoveFile(src string, dest string) (_ string, err error) {
 	dest, _ = filepath.Abs(dest)
 	return dest, err
 }
+
+// ReadBytes : Beep beep!
+func ReadBytes(filePath string) (data []byte, err error) {
+	data, err = ioutil.ReadFile(filePath)
+	return
+}
+
