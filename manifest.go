@@ -17,6 +17,7 @@ func main() {
 	initialize()
 
 	var err error
+	// store cwd for cwd drift issue
 	globals.CWD, err = os.Getwd()
 
 	args, err := handleArguments()
@@ -35,6 +36,10 @@ func main() {
 	util.CleanUp()
 }
 
+func initialize() {
+	resource.CreateDirectories()
+}
+
 func handleArguments() (args []string, err error) {
 	flag.Parse()
 	args = flag.Args()
@@ -43,10 +48,5 @@ func handleArguments() (args []string, err error) {
 		UIMode = true
 	}
 	return
-}
-
-
-func initialize() {
-	resource.CreateDirectories()
 }
 

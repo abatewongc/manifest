@@ -4,4 +4,5 @@ var (
 	UIWorking          bool   = false
 	UIProgressBarLabel string = ""
 	CWD                       = ""
+	UIMsgBoxContents string = ""
 )

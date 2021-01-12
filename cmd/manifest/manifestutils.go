@@ -38,6 +38,7 @@ func Validate(manifest Manifest) (err error) {
 }
 
 func Process(filePath string, uiEnabled bool) (err error, fileErrors []error) {
+	globals.UIMsgBoxContents = ""
 	if uiEnabled {
 		globals.UIProgressBarLabel = "Validating Manifest..."
 		gui.Update()
@@ -80,7 +81,8 @@ func Process(filePath string, uiEnabled bool) (err error, fileErrors []error) {
 		time.Sleep(1 * time.Second)
 	}
 
-	err = packageForDeployment(manifestFile.Package.Type, manifestFile.Package.Location, files)
+	msg, err := packageForDeployment(manifestFile.Package.Type, manifestFile.Package.Location, files)
+	globals.UIMsgBoxContents = msg
 	if util.HandleError(err) {
 		return err, fileErrors
 	}
@@ -114,7 +116,7 @@ func postprocessTarget(process string, target string) (filePath string, err erro
 	return
 }
 
-func packageForDeployment(packageType PackageType, location string, files []string) (err error) {
+func packageForDeployment(packageType PackageType, location string, files []string) (output string, err error) {
 	var archive string
 
 	if packageType == ZIP {
@@ -132,13 +134,17 @@ func packageForDeployment(packageType PackageType, location string, files []stri
 	if util.Exists(archive) {
 		dest, err := util.MoveFile(archive, location)
 		util.HandleError(err)
-		fmt.Println("Package saved to " + dest)
+		output = "Package saved to " + dest
+		fmt.Println(output)
 	} else {
 		fmt.Println("archive did not exist")
 	}
 
+	if stringUtils.IsBlank(output) {
+		output = err.Error()
+	}
 
-	return nil
+	return output, nil
 }
 
 func cleanup() {
