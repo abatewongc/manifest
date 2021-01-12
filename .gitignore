@@ -8,3 +8,5 @@ test/examples/output/
 *.sum
 
 tools/
+
+dist/
