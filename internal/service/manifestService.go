@@ -5,9 +5,11 @@ import (
 	"fmt"
 	gui "github.com/AllenDang/giu"
 	"github.com/aleosiss/manifest/internal/globals"
+	"github.com/aleosiss/manifest/internal/loc"
 	"github.com/aleosiss/manifest/internal/model/manifest"
 	"github.com/aleosiss/manifest/internal/util"
 	"github.com/aleosiss/manifest/internal/web"
+	"log"
 	"os"
 	"strings"
 	"sync"
@@ -69,7 +71,7 @@ func (self *ManifestService) Process(filePath string, uiEnabled bool) (err error
 	}
 
 	msg, err := self.packageForDeployment(manifestFile.Package.Type, manifestFile.Package.Location, files)
-	globals.UIMsgBoxContents = msg
+	globals.UIMsgBoxContents = self.buildLocalizedMsg(msg, fileErrors)
 	if util.HandleError(err) {
 		return err, fileErrors
 	}
@@ -78,10 +80,27 @@ func (self *ManifestService) Process(filePath string, uiEnabled bool) (err error
 	return err, fileErrors
 }
 
+func (self *ManifestService) buildLocalizedMsg(msg string, fileErrors []error) string {
+	var stringBuilder strings.Builder
+
+	stringBuilder.WriteString(msg)
+
+	for _, err := range fileErrors {
+		stringBuilder.WriteString("\n")
+		stringBuilder.WriteString("-> " + loc.LocalizeFileError(err))
+	}
+
+	if len(fileErrors) < 1 {
+		stringBuilder.WriteString("\n" + loc.NoFileErrors)
+	}
+
+	return stringBuilder.String()
+}
+
 func (self *ManifestService) handleTarget(target manifest.Target) (string, error) {
-	fmt.Println("Found target: " + target.Name)
+	log.Println("Found target: " + target.Name)
 	url, err := util.ExpandText(target.URL, "version", target.TargetVersion)
-	fmt.Println("Downloading: [" + url + "]")
+	log.Println("Downloading: [" + url + "]")
 	if util.HandleError(err) {
 		return "", err
 	}

@@ -1,8 +1,8 @@
 package globals
 
 var (
-	UIWorking          bool   = false
-	UIProgressBarLabel string = ""
-	CWD                       = ""
-	UIMsgBoxContents string = ""
+	UIWorking          = false
+	UIProgressBarLabel = ""
+	CWD                = ""
+	UIMsgBoxContents   = ""
 )
