@@ -21,32 +21,32 @@
         },
         {
             "name": "Fabric API",
-            "url": "https://www.curseforge.com/minecraft/mc-mods/fabric-api/download/${version}/file",
-            "target_version": "3159126",
+            "url": "https://media.forgecdn.net/files/3159/126/fabric-api-${version}.jar",
+            "target_version": "0.29.3%2B1.16",
             "postprocess": "none"
         },
         {
             "name": "Light Overlay",
-            "url": "https://www.curseforge.com/minecraft/mc-mods/light-overlay/download/${version}/file",
-            "target_version": "3155937",
+            "url": "https://media.forgecdn.net/files/3155/937/light-overlay-${version}.jar",
+            "target_version": "5.6.1",
             "postprocess": "none"
         },
         {
             "name": "MaLiLib",
-            "url": "https://www.curseforge.com/minecraft/mc-mods/malilib/download/${version}/file",
-            "target_version": "3113699",
+            "url": "https://media.forgecdn.net/files/3113/699/malilib-fabric-${version}.jar",
+            "target_version": "1.16.4-0.10.0-dev.21%2Barne.2",
             "postprocess": "none"
         },
         {
             "name": "Litematica",
-            "url": "https://www.curseforge.com/minecraft/mc-mods/litematica/download/${version}/file",
-            "target_version": "3101195",
+            "url": "https://media.forgecdn.net/files/3101/195/litematica-fabric-${version}.jar",
+            "target_version": "1.16.4-0.0.0-dev.20201103.184101",
             "postprocess": "none"
         },
         {
             "name": "ModMenu",
-            "url": "https://www.curseforge.com/minecraft/mc-mods/modmenu/download/${version}/file",
-            "target_version": "3121655",
+            "url": "https://media.forgecdn.net/files/3121/655/modmenu-${version}.jar",
+            "target_version": "1.14.13%2Bbuild.19",
             "postprocess": "none"
         },
         {
@@ -69,8 +69,8 @@
         },
         {
             "name": "Tweakeroo",
-            "url": "https://www.curseforge.com/minecraft/mc-mods/tweakeroo/download/${version}/file",
-            "target_version": "3107606",
+            "url": "https://media.forgecdn.net/files/3107/606/tweakeroo-fabric-${version}.jar",
+            "target_version": "1.16.4-0.10.0-dev.20201110.132827",
             "postprocess": "none"
         }
     ],

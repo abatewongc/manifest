@@ -8,7 +8,7 @@ import (
 )
 
 var zip = archiver.Zip {
-	CompressionLevel:       flate.DefaultCompression,
+	CompressionLevel:       flate.BestCompression,
 	MkdirAll:               true,
 	SelectiveCompression:   true,
 	ContinueOnError:        false,

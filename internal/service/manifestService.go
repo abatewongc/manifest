@@ -4,7 +4,6 @@ import (
 	"errors"
 	"fmt"
 	gui "github.com/AllenDang/giu"
-	"github.com/agrison/go-commons-lang/stringUtils"
 	"github.com/aleosiss/manifest/internal/globals"
 	"github.com/aleosiss/manifest/internal/model/manifest"
 	"github.com/aleosiss/manifest/internal/util"
@@ -82,6 +81,7 @@ func (self *ManifestService) Process(filePath string, uiEnabled bool) (err error
 func (self *ManifestService) handleTarget(target manifest.Target) (string, error) {
 	fmt.Println("Found target: " + target.Name)
 	url, err := util.ExpandText(target.URL, "version", target.TargetVersion)
+	fmt.Println("Downloading: [" + url + "]")
 	if util.HandleError(err) {
 		return "", err
 	}
@@ -113,7 +113,9 @@ func (self *ManifestService) packageForDeployment(packageType manifest.PackageTy
 			util.HandleError(err)
 		}
 	} else {
-		util.HandleError(errors.New("package instructions did not contain a supported type"))
+		err = errors.New("package instructions did not contain a supported type")
+		util.HandleError(err)
+		return "", err
 	}
 
 	err = os.MkdirAll(location, os.ModeDir)
@@ -125,11 +127,9 @@ func (self *ManifestService) packageForDeployment(packageType manifest.PackageTy
 		output = "Package saved to " + dest
 		fmt.Println(output)
 	} else {
-		fmt.Println("archive did not exist")
-	}
-
-	if stringUtils.IsBlank(output) {
-		output = err.Error()
+		err = errors.New("archive did not exist")
+		util.HandleError(err)
+		return "", err
 	}
 
 	return output, nil
