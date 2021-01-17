@@ -2,9 +2,9 @@ package main
 
 import (
 	"flag"
-	"github.com/aleosiss/manifest/cmd/manifest"
 	"github.com/aleosiss/manifest/internal/globals"
 	"github.com/aleosiss/manifest/internal/resource"
+	"github.com/aleosiss/manifest/internal/service"
 	"github.com/aleosiss/manifest/internal/ui"
 	"github.com/aleosiss/manifest/internal/util"
 	"log"
@@ -24,13 +24,16 @@ func main() {
 	util.HandleError(err)
 	var fileErrors []error
 
+	manifestService := service.NewManifestService()
+
 	if !UIMode {
-		err, fileErrors = manifest.Process(args[0], false)
+		err, fileErrors = manifestService.Process(args[0], false)
 		for _, err := range fileErrors {
 			log.Println(err)
 		}
 	} else {
-		ui.Start()
+		gui := ui.New(&manifestService)
+		gui.Start()
 	}
 
 	util.CleanUp()
@@ -46,6 +49,10 @@ func handleArguments() (args []string, err error) {
 
 	if len(args) < 1 {
 		UIMode = true
+	}
+
+	if len(args) > 1  {
+		log.Println("WARNING: Arguments after first ignored! First argument was " + args[0])
 	}
 	return
 }

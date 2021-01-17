@@ -16,8 +16,9 @@ func DownloadTarget(url string) (path string, err error) {
 	util.HandleError(err)
 
 	path = resp.Filename
-
-	log.Println(fmt.Sprintln("Download saved to", path))
+	if path != "" {
+		log.Println(fmt.Sprintln("Download saved to", path))
+	}
 
 	return
 }

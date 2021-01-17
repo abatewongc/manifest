@@ -2,6 +2,8 @@ package manifest
 
 import (
 	"encoding/json"
+	"errors"
+	"github.com/agrison/go-commons-lang/stringUtils"
 	"github.com/aleosiss/manifest/internal/util"
 )
 
@@ -22,7 +24,7 @@ type Target struct {
 }
 
 type Package struct {
-	Location string `json:"location"`
+	Location string      `json:"location"`
 	Type     PackageType `json:"type"`
 }
 
@@ -43,4 +45,27 @@ func From(Path string) (manifest Manifest, err error) {
 
 	err = json.Unmarshal(rawJSON, &manifest)
 	return
+}
+
+func (manifest *Manifest) Validate() (err error) {
+	// nothing too complicated
+	if stringUtils.IsBlank(manifest.Name)  {
+		err = errors.New("manifest requires a name to be considered valid")
+		return
+	}
+
+	if stringUtils.IsBlank(manifest.Package.Location) {
+		err = errors.New("manifest needs a package location to put the packaged manifest in")
+		return
+	}
+
+	if  _, ok := packageTypes[string(manifest.Package.Type)]; !ok {
+		err = errors.New("manifest does not have a valid PackageType")
+	}
+
+	if len(manifest.Targets) < 1 {
+		err = errors.New("manifest needs at least one target")
+	}
+
+	return nil
 }

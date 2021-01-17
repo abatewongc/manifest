@@ -2,14 +2,80 @@
     "name": "example manifest",
     "targets": [
         {
-            "name": "lithium",
-            "url" : "https://github.com/jellysquid3/lithium-fabric/releases/download/${version}/lithium-fabric-${version}.jar",
-            "target_version" : "mc1.16.4-0.6.0",
+            "name": "Lithium",
+            "url": "https://github.com/jellysquid3/lithium-fabric/releases/download/${version}/lithium-fabric-${version}.jar",
+            "target_version": "mc1.16.4-0.6.0",
+            "postprocess": "none"
+        },
+        {
+            "name": "carpet-extras",
+            "url": "https://github.com/gnembon/carpet-extra/releases/download/v1.4/carpet-extra-${version}.jar",
+            "target_version": "1.16.4-1.4.16",
+            "postprocess": "none"
+        },
+        {
+            "name": "carpet",
+            "url": "https://github.com/gnembon/fabric-carpet/releases/download/v1.4-homebound/fabric-carpet-${version}.jar",
+            "target_version": "1.16.4-1.4.22+v210113",
+            "postprocess": "none"
+        },
+        {
+            "name": "Fabric API",
+            "url": "https://www.curseforge.com/minecraft/mc-mods/fabric-api/download/${version}/file",
+            "target_version": "3159126",
+            "postprocess": "none"
+        },
+        {
+            "name": "Light Overlay",
+            "url": "https://www.curseforge.com/minecraft/mc-mods/light-overlay/download/${version}/file",
+            "target_version": "3155937",
+            "postprocess": "none"
+        },
+        {
+            "name": "MaLiLib",
+            "url": "https://www.curseforge.com/minecraft/mc-mods/malilib/download/${version}/file",
+            "target_version": "3113699",
+            "postprocess": "none"
+        },
+        {
+            "name": "Litematica",
+            "url": "https://www.curseforge.com/minecraft/mc-mods/litematica/download/${version}/file",
+            "target_version": "3101195",
+            "postprocess": "none"
+        },
+        {
+            "name": "ModMenu",
+            "url": "https://www.curseforge.com/minecraft/mc-mods/modmenu/download/${version}/file",
+            "target_version": "3121655",
+            "postprocess": "none"
+        },
+        {
+            "name": "Phosphor",
+            "url": "https://github.com/jellysquid3/phosphor-fabric/releases/download/mc1.16.2-v0.7.0/phosphor-fabric-${version}.jar",
+            "target_version": "mc1.16.3-0.7.0+build.10",
+            "postprocess": "none"
+        },
+        {
+            "name": "ReplayMod",
+            "url": "https://minio.replaymod.com/replaymod/replaymod-${version}.jar",
+            "target_version": "1.16.4-2.5.1",
+            "postprocess": "none"
+        },
+        {
+            "name": "Shulker Box Tooltips",
+            "url": "https://github.com/MisterPeModder/ShulkerBoxTooltip/releases/download/v${version}/shulkerboxtooltip-${version}.jar",
+            "target_version": "2.3.3%2B1.16.4",
+            "postprocess": "none"
+        },
+        {
+            "name": "Tweakeroo",
+            "url": "https://www.curseforge.com/minecraft/mc-mods/tweakeroo/download/${version}/file",
+            "target_version": "3107606",
             "postprocess": "none"
         }
     ],
-    "package" : {
-        "location" : "./output/example",
-        "type" : "zip"
+    "package": {
+        "location": "./output/example",
+        "type": "zip"
     }
 }
